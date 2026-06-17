@@ -1,0 +1,38 @@
+# GitOps for infrastructure: plan on every pull request, apply on merge to main.
+# OpenTofu (a drop-in for Terraform). Cloud creds come from OIDC / repo secrets — never
+# hardcoded. This is the "infrastructure changes go through code review" workflow.
+name: opentofu
+
+on:
+  pull_request:
+    paths: ["**.tf", "**.tfvars"]
+  push:
+    branches: [main]
+    paths: ["**.tf", "**.tfvars"]
+
+permissions:
+  contents: read
+  pull-requests: write   # so the plan can be summarized back on the PR
+  id-token: write        # OIDC to the cloud — no long-lived keys in the repo
+
+jobs:
+  tofu:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: examples
+    steps:
+      - uses: actions/checkout@v4
+      - uses: opentofu/setup-opentofu@v1
+
+      - run: tofu init -input=false
+      - run: tofu fmt -check -recursive
+      - run: tofu validate
+
+      - name: Plan (pull request)
+        if: github.event_name == 'pull_request'
+        run: tofu plan -no-color -input=false
+
+      - name: Apply (merge to main)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: tofu apply -auto-approve -input=false

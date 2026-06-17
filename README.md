@@ -3,6 +3,22 @@
 Multi-cloud automation and operations across AWS, Azure, GCP, and Oracle Cloud — provisioned as
 code, monitored, and kept on a budget. Backed by 10+ cloud certifications.
 
+## What's in this repo
+Runnable examples — provisioning, cost governance, GitOps, and connectivity:
+
+| Project | What it does |
+|---|---|
+| [`examples/oci_always_free.tf`](examples/oci_always_free.tf) | Oracle Cloud Always-Free **Ampere A1.Flex** instance (zero-cost compute) |
+| [`examples/cost_guardrails.tf`](examples/cost_guardrails.tf) | AWS **default tags** + a monthly **budget** alert |
+| [`examples/azure_budget.tf`](examples/azure_budget.tf) | Azure **subscription budget** with an 80% alert (FinOps parity) |
+| [`examples/aws_cost_report.py`](examples/aws_cost_report.py) | Month-to-date AWS cost **by service** (Cost Explorer / boto3) |
+| [`examples/find_untagged.py`](examples/find_untagged.py) | FinOps governance — flag **untagged** running instances (non-zero exit to alert) |
+| [`examples/wireguard-hybrid.conf`](examples/wireguard-hybrid.conf) | **Hybrid connectivity** — WireGuard site-to-site (on-prem ↔ cloud) |
+| [`.github/workflows/opentofu-plan-apply.yml`](.github/workflows/opentofu-plan-apply.yml) | **GitOps CI** — OpenTofu plan on PR, apply on merge (OIDC, no static keys) |
+
+> All examples use placeholder values and pull credentials from the environment / OIDC —
+> nothing sensitive is committed.
+
 ## What it looks like in practice
 
 Cost discipline belongs *in the code*, not in a monthly surprise. Tag everything on creation and
